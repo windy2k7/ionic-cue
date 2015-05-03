@@ -23,7 +23,7 @@ angular.module('cue.controllers', [])
 
     $scope.$on('$stateChangeSuccess', function() {
         $ionicLoading.show({
-            template: '<i class="icon ion-loading-c"></i> Loading...'
+            template: '<ion-spinner></ion-spinner><br/>Loading ...'
         });
     });
 
