@@ -1,0 +1,36 @@
+<ion-view view-title="{{page.title}}">
+  <ion-content>
+    <div class="list card">
+	  <div class="item item-body">
+	    <img class="full-image" ng-src="{{page.thumbnail_images.full.url}}">
+	    <h2>{{page.title_plain}}</h2>
+	    <p ng-bind-html="page.content"></p>
+	  </div>
+	</div>
+	<!-- Sub Page -->
+	<div class="row" ng-if="page.children.length > 0">
+		<div class="col sub-page-img" ng-repeat="sub in page.children" ng-click="goPage(sub.id)">
+			<h3 class="title">{{sub.title}}</h3>
+			<img class="full-image" ng-src="{{sub.thumbnail_images.medium.url}}">
+		</div>
+	</div>
+	<!-- Gallery -->
+	<div class="row responsive-lg" ng-if="page.gallery.length > 0">
+		<div class="col col-50 " ng-repeat="image in page.gallery" ng-click="goToSlide($index)">
+			<h3 class="title">{{image.name}}</h3>
+			<img class="full-image" ng-src="{{image.thumbnail_images.medium.url}}">
+		</div>
+	</div>
+	<!-- Image Modal -->
+	<script id="image-modal.html" type="text/ng-template">
+	  <div class="modal image-modal transparent" ng-click="closeModal()">
+	    <ion-slide-box on-slide-changed="slideChanged(index)" show-pager="false">
+	      <ion-slide ng-repeat="image in page.gallery">
+	        <img ng-src="{{image.thumbnail_images.full.url}}" class="fullscreen-image" />
+	        <p class="info">{{image.name}}</p>
+	      </ion-slide>
+	    </ion-slide-box>
+	  </div>
+	</script>
+  </ion-content>
+</ion-view>
