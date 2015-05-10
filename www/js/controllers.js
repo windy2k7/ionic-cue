@@ -4,8 +4,10 @@ angular.module('cue.controllers', [])
 
   //Loading left menu data  
   $scope.leftMenu = MenuData.menu;
+  $scope.page = {};
+  $scope.subPageList = [];
 
-  var i, l = MenuData.menu.length;
+  var i, j, l = MenuData.menu.length, m=0;
   $scope.menuIndex = [];
 
   if(MenuData.menu.length > 0)
@@ -17,9 +19,13 @@ angular.module('cue.controllers', [])
   }
 
 })
-.controller('PageCtrl', function($scope, $stateParams, $timeout, $ionicLoading, $ionicModal, $ionicSlideBoxDelegate, PageService) {
+.controller('PageCtrl', function($scope, $state, $stateParams, $timeout, $ionicLoading, $ionicModal, $ionicSlideBoxDelegate, PageService) {
     var pageId = $stateParams.pageId, 
+        subPageId = $stateParams.subPageId,
         urlAPI = '';
+
+    urlAPI = pageId ? $scope.menuIndex[pageId].url : $scope.leftMenu[0].url;
+    loadPage(urlAPI);
 
     $scope.$on('$stateChangeSuccess', function() {
         $ionicLoading.show({
@@ -27,16 +33,50 @@ angular.module('cue.controllers', [])
         });
     });
 
+    function generateGallery(data)
+    {
+      var i = 0, j=0, l = data ? data.length : 0, col = 2,idx = 0;
+      gallery = [];
+
+      for(i; i<l/col; i++)
+      {
+        gallery[i] = [];
+
+        for(j=0;j<col;j++)
+        {        
+          idx = i*2+j;
+          if(data[idx] != undefined) {
+            gallery[i].push(angular.extend({index : idx}, data[idx])); 
+          }
+        }
+      } 
+
+      return gallery; 
+    }
+
     function loadPage(url)
     {
-      PageService.getPage(url).then(function(data){
+      PageService.getPage(url).then(function(data){        
         $scope.page = data.page;
+        $scope.gallery = generateGallery(data.page.hasOwnProperty('gallery') ? data.page.gallery : []);  
+        $scope.isSubPage = false;
+        $scope.subPageList  = data.page.hasOwnProperty('children') ? data.page.children : [];              
         $ionicLoading.hide();
       });
     }   
 
-    urlAPI = pageId ? $scope.menuIndex[pageId].url : $scope.leftMenu[0].url;  
-    loadPage(urlAPI);
+    $scope.goSubPage = function(subPageId)
+    {
+      if($scope.page.hasOwnProperty('children') && $scope.page.children[subPageId] != undefined)
+      {
+        $scope.page = $scope.page.children[subPageId];
+      }
+      else{
+         $scope.page = $scope.subPageList[subPageId];
+      }
+
+      $scope.isSubPage = true;
+    }
 
     // Image Modal : http://codepen.io/rdelafuente/pen/tJrik
     // Image Modal Slide Box : http://codepen.io/rdelafuente/pen/lteGc 
@@ -87,7 +127,7 @@ angular.module('cue.controllers', [])
   
     $scope.goToSlide = function(index) {
       $scope.modal.show();
-      $ionicSlideBoxDelegate.slide(index);
+      $ionicSlideBoxDelegate.slide(index);      
     }
   
     // Called each time the slide changes
