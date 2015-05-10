@@ -1,22 +1,29 @@
 <ion-view view-title="{{page.title}}">
   <ion-content>
+  	<!-- Viewing Tab If there is Sub Page -->
+	<div class="item item-text-wrap" ng-if="isSubPage">
+	  <div class="button-bar">
+	      <a class="button" ng-repeat="sub in subPageList" ng-click="goSubPage($index)">{{sub.title}}</a>	          
+	  </div>
+	</div>
+	<!-- Title & Thumbnail -->
     <div class="list card">
 	  <div class="item item-body">
 	    <img class="full-image" ng-src="{{page.thumbnail_images.full.url}}">
 	    <h2>{{page.title_plain}}</h2>
 	    <p ng-bind-html="page.content"></p>
 	  </div>
-	</div>
-	<!-- Sub Page -->
+	</div>	
+	<!-- Sub Page Thumbnail -->
 	<div class="row" ng-if="page.children.length > 0">
-		<div class="col sub-page-img" ng-repeat="sub in page.children" ng-click="goPage(sub.id)">
-			<h3 class="title">{{sub.title}}</h3>
+		<div class="col sub-page-img" ng-repeat="sub in page.children">
+			<h3 class="title" ng-click="goSubPage($index)">{{sub.title}}</h3>
 			<img class="full-image" ng-src="{{sub.thumbnail_images.medium.url}}">
 		</div>
 	</div>
 	<!-- Gallery -->
-	<div class="row responsive-lg" ng-if="page.gallery.length > 0">
-		<div class="col col-50 " ng-repeat="image in page.gallery" ng-click="goToSlide($index)">
+	<div class="row" ng-repeat="rows in gallery">
+		<div class="col col-50 gallery-thumb" ng-repeat="image in rows" ng-click="goToSlide(image.index)">
 			<h3 class="title">{{image.name}}</h3>
 			<img class="full-image" ng-src="{{image.thumbnail_images.medium.url}}">
 		</div>

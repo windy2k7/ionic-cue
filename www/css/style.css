@@ -1,4 +1,9 @@
 /* Empty. Add your own CSS if you like */
+.gallery-thumb{
+  position: relative;
+  max-height: 150px;
+  overflow: hidden;
+}
 .sub-page-img{
 	position: relative;
 	max-height: 100px;
@@ -52,7 +57,7 @@ p.info {
 /* Fix modal backdrop for smaller devices */
 @media (max-width: 679px) {
   .active .modal-backdrop-bg {
-    opacity: .5;
+    opacity: .9;
   }
   .modal-backdrop-bg {
     -webkit-transition: opacity 300ms ease-in-out;
